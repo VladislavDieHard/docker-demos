@@ -14,6 +14,10 @@ services:
     ports:
       - 5000:3001
     restart: always
+    links:
+      - mongo
+    depends_on:
+      - mongo
 
   client:
     container_name: front-end-app
@@ -28,3 +32,14 @@ services:
       - server
     links:
       - server
+
+  mongo:
+    container_name: mongo-db
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./data/db:/data/db
