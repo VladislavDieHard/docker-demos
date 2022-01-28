@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  server:
+    container_name: back-end-app
+    build: ./server
+    environment:
+      - DB_URL=mongodb://host.docker.internal:27017/nest
+      - PORT=3001
+      - SALT_ROUNDS=5
+      - JWT_SECRET=1d49a348bcd420c2315bdd6d3436bb56
+      - TOKEN_EXPIRES_TIME=24h
+    command: npm run start:dev
+    ports:
+      - 5000:3001
+    restart: always
+
+  client:
+    container_name: front-end-app
+    image: vladdamage/nest_client
+    build: ./client
+    environment:
+      - VUE_APP_REST_API=http://localhost:5000
+    ports:
+      - 5001:8080
+    restart: always
+    depends_on:
+      - server
+    links:
+      - server
